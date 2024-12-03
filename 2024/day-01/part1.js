@@ -1001,39 +1001,19 @@ const input = [
     "73123   12635",
 ]
 
-const testdata = [
-    "3   4",
-    "4   3",
-    "2   5",
-    "1   3",
-    "3   9",
-    "3   3",
-]
+const arrayOne = [], arrayTwo = []
 
-function main() {
-    console.log("day 1, part 1...")
-    const arrayOne = []
-    const arrayTwo = []
+input.forEach(id => {
+    arrayOne.push(Number(id.split("   ")[0]))
+    arrayTwo.push(Number(id.split("   ")[1]))
+})
 
-    input.forEach(id => {
-        data = id.split("   ")
-        arrayOne.push(Number(data[0]))
-        arrayTwo.push(Number(data[1]))
-    })
+arrayOne.sort()
+arrayTwo.sort()
 
-    arrayOne.sort()
-    arrayTwo.sort()
+let sumOfDiffence = 0
+arrayOne.forEach((id, index) => {
+    sumOfDiffence += Math.abs(id - arrayTwo[index])
+})
 
-    console.log(arrayOne)
-    console.log(arrayTwo)
-
-    let sumOfDiffence = 0
-    arrayOne.forEach((id, index) => {
-        sumOfDiffence += Math.abs(arrayOne[index] - arrayTwo[index])
-    })
-
-    console.log(sumOfDiffence)
-}
-
-
-main() // 2769675
+console.log(sumOfDiffence) // 2769675

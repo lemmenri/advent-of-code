@@ -1011,7 +1011,7 @@ const testdata = [
 ]
 
 function main() {
-    console.log("day 1, part 1...")
+    console.log("day 1, part 2...")
     const arrayOne = []
     const arrayTwo = []
 
@@ -1024,9 +1024,6 @@ function main() {
     arrayOne.sort()
     arrayTwo.sort()
 
-    console.log(arrayOne)
-    console.log(arrayTwo)
-
     let similarityScore = 0
     arrayOne.forEach((nr) => {
         count = arrayTwo.filter(element => element === nr).length
@@ -1037,4 +1034,4 @@ function main() {
 }
 
 
-main() // 
+main() // 24643097
