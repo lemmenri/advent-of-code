@@ -157,19 +157,26 @@ function main() {
 
     const skipGuardPostition = findCurrentGuardPosition(startingmap)
 
+    const skipNotSeenPositions = findLoop(startingmap, true)
+    // console.log(skipNotSeenPositions)
+
     startingmap.forEach((row, i) => {
         row.forEach((field, j) => {
             if (skipGuardPostition.x === j && skipGuardPostition.y === i) {
                 console.log("skipping start position")
-            } else {
-                const testMap = markPosition(JSON.parse(JSON.stringify(startingmap)), j, i, "O")
-                // console.log(testMap)
-                const mapHasLoop = findLoop(testMap)
-                if (mapHasLoop) {
-                    loopCounter++
-                }
-                console.log(`Map ${i}, ${j} has a loop: ${mapHasLoop}`)
+                return
             }
+            if (!(skipNotSeenPositions[i][j] === "X")) {
+                console.log("skipping position out of scope")
+                return
+            }
+            const testMap = markPosition(JSON.parse(JSON.stringify(startingmap)), j, i, "O")
+            // console.log(testMap)
+            const mapHasLoop = findLoop(testMap)
+            if (mapHasLoop) {
+                loopCounter++
+            }
+            console.log(`Map ${i}, ${j} has a loop: ${mapHasLoop}`)
         })
     })
 
@@ -178,7 +185,7 @@ function main() {
 
 main() // 1831
 
-function findLoop(startingmap) {
+function findLoop(startingmap, returnMarkedMap = false) {
     let markedMap = new Array(startingmap.length).fill().map(() => new Array(startingmap[0].length).fill("."))
     let isDone = false
     let stepCounter = 0
@@ -212,6 +219,9 @@ function findLoop(startingmap) {
     // console.log("taken " + stepCounter + " steps...")
     // console.log(countStepsTaken(markedMap))
     // console.log("Loop: " + foundLoop)
+    if (returnMarkedMap) {
+        return markedMap
+    }
     return foundLoop
 }
 
