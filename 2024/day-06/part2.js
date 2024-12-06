@@ -145,38 +145,75 @@ const test = [
 ]
 
 function main() {
-    console.log("day 06 part 1...")
+    console.log("day 06 part 2...")
+
     const startingmap = []
     input.forEach(row => {
         startingmap.push(row.split(""))
     })
     // console.log(startingmap)
 
+    let loopCounter = 0
+
+    const skipGuardPostition = findCurrentGuardPosition(startingmap)
+
+    startingmap.forEach((row, i) => {
+        row.forEach((field, j) => {
+            if (skipGuardPostition.x === j && skipGuardPostition.y === i) {
+                console.log("skipping start position")
+            } else {
+                const testMap = markPosition(JSON.parse(JSON.stringify(startingmap)), j, i, "O")
+                // console.log(testMap)
+                const mapHasLoop = findLoop(testMap)
+                if (mapHasLoop) {
+                    loopCounter++
+                }
+                console.log(`Map ${i}, ${j} has a loop: ${mapHasLoop}`)
+            }
+        })
+    })
+
+    console.log("Loops: " + loopCounter)
+}
+
+main() // 1831
+
+function findLoop(startingmap) {
     let markedMap = new Array(startingmap.length).fill().map(() => new Array(startingmap[0].length).fill("."))
     let isDone = false
     let stepCounter = 0
     const maxSteps = 10000
     let nextPosition = findCurrentGuardPosition(startingmap)
-    console.log(nextPosition)
+    // console.log(nextPosition)
     markedMap = markPosition(markedMap, nextPosition.x, nextPosition.y)
+
+    const previousPositions = [nextPosition]
+    let foundLoop = false
 
 
     while (!isDone && stepCounter < maxSteps) {
         if (stepCounter === (maxSteps - 1)) { console.log("running out of steps...") }
         nextPosition = findNextPosition(startingmap, nextPosition)
+        // check if nextPosition has already been visited before
+        if (hasBeenThereBefore(previousPositions, nextPosition)) {
+            foundLoop = true
+            isDone = true
+        } else {
+            previousPositions.push(nextPosition)
+        }
         if (nextPosition === "done") { isDone = true }
         else {
-            console.log(nextPosition)
+            // console.log(nextPosition)
             markedMap = markPosition(markedMap, nextPosition.x, nextPosition.y)
         }
         stepCounter++
     }
     // console.log(markedMap)
-    console.log("taken " + stepCounter + " steps...")
-    console.log(countStepsTaken(markedMap))
+    // console.log("taken " + stepCounter + " steps...")
+    // console.log(countStepsTaken(markedMap))
+    // console.log("Loop: " + foundLoop)
+    return foundLoop
 }
-
-main() // 5318
 
 function findCurrentGuardPosition(map) {
     const regex = /(<|>|v|\^)/
@@ -200,14 +237,10 @@ function findDirection(guard) {
     return "something went wrong"
 }
 
-function move(oldposition, newpostion) {
-
-}
-
-function markPosition(map, x, y) {
-    console.log(x + ", " + y)
+function markPosition(map, x, y, mark = "X") {
+    // console.log(x + ", " + y)
     const markedMap = [...map]
-    markedMap[Number(y)][Number(x)] = "X"
+    markedMap[Number(y)][Number(x)] = mark
     // console.log(markedMap)
     return markedMap
 }
@@ -233,7 +266,7 @@ function findNextPosition(map, currentPosition) {
     }
 
     // check for collision
-    if (map[nextY][nextX] === "#") {
+    if (map[nextY][nextX] === "#" || map[nextY][nextX] === "O") {
         let nextDirection = null
         if (currentPosition.direction === 'up') { nextDirection = "right" }
         if (currentPosition.direction === 'down') { nextDirection = "left" }
@@ -255,3 +288,34 @@ function countStepsTaken(map) {
     })
     return counter
 }
+
+function hasBeenThereBefore(previousPositions, nextPosition) {
+    let hasBeenThere = false
+    previousPositions.forEach(position => {
+        if (
+            position.x === nextPosition.x &&
+            position.y === nextPosition.y &&
+            position.direction == nextPosition.direction
+        ) {
+            hasBeenThere = true
+        }
+    })
+    return hasBeenThere
+}
+
+// const previousPositions = [
+//     { x: 4, y: 6, direction: 'up' },
+//     { x: 4, y: 5, direction: 'up' },
+//     { x: 4, y: 4, direction: 'up' },
+//     { x: 4, y: 3, direction: 'up' },
+//     { x: 8, y: 3, direction: 'down' },
+//     { x: 8, y: 4, direction: 'down' },
+//     { x: 8, y: 5, direction: 'down' },
+//     { x: 8, y: 6, direction: 'down' },
+//     { x: 8, y: 6, direction: 'left' },
+//     { x: 7, y: 6, direction: 'left' }
+// ]
+
+// const nextPosition = { x: 7, y: 6, direction: 'left' }
+
+// console.log(hasBeenThereBefore(previousPositions, nextPosition))
