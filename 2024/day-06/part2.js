@@ -145,6 +145,7 @@ const test = [
 ]
 
 function main() {
+    const startTime = Date.now()
     console.log("day 06 part 2...")
 
     const startingmap = []
@@ -181,6 +182,8 @@ function main() {
     })
 
     console.log("Loops: " + loopCounter)
+    const elapsedTime = Date.now() - startTime
+    console.log("Time: " + elapsedTime)
 }
 
 main() // 1831
