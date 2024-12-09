@@ -7,19 +7,19 @@ const test = [
 ]
 
 function main() {
-    console.log("day 09 part 1")
+    console.log("day 09 part 2")
     const decompressed = decompress(input[0])
     const moved = moveBlocks(decompressed)
     const checksum = calculateChecksum(moved)
     console.log(checksum)
 }
 
-main() // 6330095022244
+main() // 6359491814941
 
 function arrayToString(array) {
     let newData = ""
     array.forEach(char => {
-        newData += char
+        newData += char === "." ? "." : String.fromCharCode(char + 65 - 17)
     })
     return newData
 }
@@ -49,26 +49,46 @@ function decompress(string) {
 
 function moveBlocks(array) {
     const data = array
+    // console.log(arrayToString(data))
 
-    let isDoneMoving = false
-    while (!isDoneMoving) {
-        const indexFirstEmptyBlock = data.findIndex(element => element === ".")
-        const indexLastNonemptyBlock = data.findLastIndex(element => element !== ".")
-        if (indexFirstEmptyBlock < indexLastNonemptyBlock) {
-            const dataFromLastNonemptyBlock = data[indexLastNonemptyBlock]
-            data[indexFirstEmptyBlock] = dataFromLastNonemptyBlock
-            data[indexLastNonemptyBlock] = "."
+    const lastIndex = data.findLastIndex(element => element !== ".")
+    const valueLastIndex = data[lastIndex]
+
+    for (let i = valueLastIndex; i >= 0; i--) {
+        // get data block
+        const indexLastNonemptyBlock = data.findLastIndex(element => element === i)
+        const dataFromLastNonemptyBlock = data[indexLastNonemptyBlock]
+
+        let fileStartIndex = indexLastNonemptyBlock
+        let fileLength = 1
+
+        while (data[fileStartIndex] === dataFromLastNonemptyBlock) {
+            fileLength++
+            fileStartIndex--
+        }
+
+        const file = data.slice(fileStartIndex + 1, (fileStartIndex + fileLength))
+        fileLength--
+
+        // get first empty part
+        const indexFirstEmptyBlock = arrayToString(data).indexOf(new Array(fileLength + 1).join("."))
+        if (indexFirstEmptyBlock > fileStartIndex || indexFirstEmptyBlock === -1) {
+            // console.log("skipping")
         } else {
-            isDoneMoving = true
+            // console.log("swapping from " + indexFirstEmptyBlock)
+
+            const emptyBlock = data.slice(indexFirstEmptyBlock, (indexFirstEmptyBlock + fileLength))
+            console.log("Swap " + i)
+            data.splice(indexFirstEmptyBlock, fileLength, ...file) // replace empty spaces with data
+            data.splice(fileStartIndex + 1, fileLength, ...emptyBlock.slice(0, fileLength)) // replace data with empty space
         }
     }
 
     return data
 }
 
-// console.log(arrayToString(moveBlocks(decompress("12345")))) // 022111222......
-// console.log(arrayToString(moveBlocks(decompress("2333133121414131402")))) // 0099811188827773336446555566..............
-// console.log(arrayToString(moveBlocks(decompress("233313312141413140203")))) // 0010101011199828883337447555576666..............
+// console.log(moveBlocks(decompress("2333133121414131402"))) // 00992111777.44.333....5555.6666.....8888..
+// console.log(moveBlocks(decompress("233313312141413140203"))) // 0010101011199.2777333.44.5555.6666.....8888.....
 
 function calculateChecksum(array) {
     let checksum = 0
