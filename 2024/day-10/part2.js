@@ -95,7 +95,7 @@ const test5 = [
 ]
 
 function main() {
-    console.log("day 10 part 1...")
+    console.log("day 10 part 2...")
     const data = parseInputToArray(input)
     // printArray(data)
     const trailheads = getTrailheads(data)
@@ -108,7 +108,7 @@ function main() {
 
 }
 
-main() // 531
+main() // 1210
 
 function calculateScore(paths) {
     let pairs = []
@@ -120,10 +120,10 @@ function calculateScore(paths) {
     })
     // console.log("pairs:")
     // console.log(pairs)
-    const uniquePairs = new Set(pairs.map(e => JSON.stringify(e.startAndEnd)))
-    console.log("uniquePairs:")
-    console.log(uniquePairs)
-    return uniquePairs.size
+    // const uniquePairs = new Set(pairs.map(e => JSON.stringify(e.startAndEnd)))
+    // console.log("uniquePairs:")
+    // console.log(uniquePairs)
+    return pairs.length
 }
 
 function findPaths(map, trailhead) {
