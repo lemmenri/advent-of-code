@@ -1,12 +1,14 @@
 const input = "64554 35 906 6 6960985 5755 975820 0"
 
 const test = "125 17"
+const test2 = "0"
 
 function main() {
     console.log("day 11 part 1")
     let stones = input.split(" ")
     console.log(stones)
     for (let i = 0; i < 25; i++) {
+        console.log("Iteration " + (i + 1))
         stones = JSON.parse(JSON.stringify(nextIteration(stones)))
         console.log(stones)
     }
