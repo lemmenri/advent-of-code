@@ -17,7 +17,6 @@ function main() {
         count += stone.count
     })
     console.log("Lenght: " + count)
-
 }
 
 main() // 207961583799296
@@ -45,9 +44,6 @@ function nextIteration(array) {
             const newValue2 = Number(String(stone.value).slice(String(stone.value).length / 2, String(stone.value).length))
             addValueToArray(newValue1, stone.count, newArray)
             addValueToArray(newValue2, stone.count, newArray)
-
-            //     newArray.push(Number(String(stone).slice(0, String(stone).length / 2)))
-            //     newArray.push(Number(String(stone).slice(String(stone).length / 2, String(stone).length)))
         } else {
             const newValue = Number(stone.value) * 2024
             addValueToArray(newValue, stone.count, newArray)
