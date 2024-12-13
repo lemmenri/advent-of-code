@@ -185,9 +185,36 @@ const test6 = [ // 44
     "BB",
 ]
 
+const test7 = [
+    "AA",
+]
+
+const test8 = [
+    "EEEEE",
+    "EXXXX",
+    "EEEEE",
+    "EXXXX",
+    "EEEEE",
+]
+
+const test9 = [
+    "AAAAAA",
+    "AAABBA",
+    "AAABBA",
+    "ABBAAA",
+    "ABBAAA",
+    "AAAAAA",
+]
+
+const test10 = [
+    "AAA",
+    "AAA",
+    "AAA",
+]
+
 function main() {
-    console.log("day 11 part 1...")
-    // const data = parseInputToArray(test1)
+    console.log("day 11 part 2...")
+    // const data = parseInputToArray(test10)
     // console.log(data)
     // const regions = calculateRegions(data)
     // console.log(regions)
@@ -196,15 +223,19 @@ function main() {
     // console.log(data)
 
 
-    // console.log("Total price test1: " + calculateTotalPrice(calculateRegions(parseInputToArray(test1)))) // 140
-    // console.log("Total price test2: " + calculateTotalPrice(calculateRegions(parseInputToArray(test2)))) // 772
-    // console.log("Total price test3: " + calculateTotalPrice(calculateRegions(parseInputToArray(test3)))) // 1930
-    // console.log("Total price test4: " + calculateTotalPrice(calculateRegions(parseInputToArray(test4)))) // 28
-    // console.log("Total price test4: " + calculateTotalPrice(calculateRegions(parseInputToArray(test5)))) // 24
-    console.log("Total price test4: " + calculateTotalPrice(calculateRegions(parseInputToArray(input)))) // 24
+    console.log("Total price test1: " + calculateTotalPrice(calculateRegions(parseInputToArray(test1)))) // 80
+    console.log("Total price test2: " + calculateTotalPrice(calculateRegions(parseInputToArray(test2)))) // 436
+    console.log("Total price test3: " + calculateTotalPrice(calculateRegions(parseInputToArray(test3)))) // 1206
+    console.log("Total price test4: " + calculateTotalPrice(calculateRegions(parseInputToArray(test4)))) // 22
+    console.log("Total price test5: " + calculateTotalPrice(calculateRegions(parseInputToArray(test5)))) // 16
+    console.log("Total price input: " + calculateTotalPrice(calculateRegions(parseInputToArray(input)))) // 858684
+    // console.log("Total price test7: " + calculateTotalPrice(calculateRegions(parseInputToArray(test7)))) // 8
+    // console.log("Total price test8: " + calculateTotalPrice(calculateRegions(parseInputToArray(test8)))) // 236
+    // console.log("Total price test9: " + calculateTotalPrice(calculateRegions(parseInputToArray(test9)))) // 368
+    // console.log("Total price test10: " + calculateTotalPrice(calculateRegions(parseInputToArray(test10)))) // 36
 }
 
-main() // 1424006
+main() // 858684
 
 function calculateTotalPrice(regions) {
     let totalPrice = 0
@@ -240,6 +271,7 @@ function calculateRegions(area) {
                 area: undefined,
                 perimeter: undefined,
                 price: undefined,
+                sides: undefined,
                 parts: partsOfThisRegion
             })
 
@@ -254,8 +286,10 @@ function calculateRegions(area) {
 
     regions.forEach(region => {
         region.area = region.parts.length
-        region.perimeter = calculatePerimeter(area, region)
-        region.price = region.area * region.perimeter
+        // region.sides = calculateSides(area, region)
+        region.sides = calculateCorners(region)
+        // region.perimeter = calculatePerimeter(area, region)
+        region.price = region.area * region.sides
     })
 
     return regions
@@ -264,6 +298,161 @@ function calculateRegions(area) {
 // console.log("TESTING CALCULATEREGIONS")
 // console.log(calculateRegions(parseInputToArray(test1)))
 // console.log(calculateRegions(parseInputToArray(test2)))
+
+function calculateCorners(region) {
+    let corners = 0
+
+    const fields = region.parts
+    const fieldDetails = []
+    fields.forEach(field => {
+        const north = fields.find(part => (part.x === field.x && (part.y + 1) === field.y))
+        const east = fields.find(part => ((part.x - 1) === field.x && part.y === field.y))
+        const south = fields.find(part => (part.x === field.x && (part.y - 1) === field.y))
+        const west = fields.find(part => ((part.x + 1) === field.x && part.y === field.y))
+        const northEast = fields.find(part => ((part.x - 1) === field.x && (part.y + 1) === field.y))
+        const southEast = fields.find(part => ((part.x - 1) === field.x && (part.y - 1) === field.y))
+        const southWest = fields.find(part => ((part.x + 1) === field.x && (part.y - 1) === field.y))
+        const northWest = fields.find(part => ((part.x + 1) === field.x && (part.y + 1) === field.y))
+        fieldDetails.push({
+            field,
+            north,
+            northEast,
+            east,
+            southEast,
+            south,
+            southWest,
+            west,
+            northWest,
+        })
+    })
+    // console.log(fieldDetails)
+
+    fieldDetails.forEach(field => {
+        // north east
+        if ((!field.north && !field.east) || (field.north && field.east && (!field.northEast))) {
+            // console.log('north east corner found for field: ' + field.field.x + ", " + field.field.y)
+            corners++
+        }
+        // south east
+        if ((!field.south && !field.east) || (field.south && field.east && (!field.southEast))) {
+            // console.log('south east corner found for field: ' + field.field.x + ", " + field.field.y)
+            corners++
+        }
+        // south west
+        if ((!field.south && !field.west) || (field.south && field.west && (!field.southWest))) {
+            // console.log('south west corner found for field: ' + field.field.x + ", " + field.field.y)
+            corners++
+        }
+        // north west
+        if ((!field.north && !field.west) || (field.north && field.west && (!field.northWest))) {
+            // console.log('north west corner found for field: ' + field.field.x + ", " + field.field.y)
+            corners++
+        }
+    })
+
+    return corners
+}
+
+// function calculateSides(area, region) {
+//     let sides = 0
+//     const fields = region.parts
+//     const fieldDetails = []
+//     fields.forEach(field => {
+//         const north = fields.find(part => (part.x === field.x && (part.y + 1) === field.y))
+//         const east = fields.find(part => ((part.x - 1) === field.x && part.y === field.y))
+//         const south = fields.find(part => (part.x === field.x && (part.y - 1) === field.y))
+//         const west = fields.find(part => ((part.x + 1) === field.x && part.y === field.y))
+//         fieldDetails.push({
+//             field,
+//             north,
+//             northId: undefined,
+//             east,
+//             eastId: undefined,
+//             south,
+//             southId: undefined,
+//             west,
+//             westId: undefined,
+//         })
+//     })
+//     // console.log(fieldDetails)
+
+//     fieldDetails.forEach(field => {
+//         // North
+//         if (field.north === undefined) {
+//             // Get East neighbours NorthId
+//             const eastNorth = fieldDetails.find((plot) => ((plot.field.x - 1) === field.field.x && plot.field.y === field.field.y))?.northId
+//             // Get West neighbours NorthId
+//             const westNorth = fieldDetails.find((plot) => ((plot.field.x + 1) === field.field.x && plot.field.y === field.field.y))?.northId
+//             // console.log("neighbours north")
+//             // console.log(eastNorth)
+//             // console.log(westNorth)
+//             if (eastNorth !== undefined) { field.northId = eastNorth }
+//             else if (westNorth !== undefined) { field.northId = westNorth }
+//             else {
+//                 field.northId = sides
+//                 sides++
+//             }
+//             // console.log(field.northId)
+//         }
+
+//         // East
+//         if (field.east === undefined) {
+//             // Get South neighbours EastId
+//             const southEast = fieldDetails.find(plot => (plot.field.x === field.field.x && (plot.field.y - 1) === field.field.y))?.eastId
+//             // Get North neighbours EastId
+//             const northEast = fieldDetails.find(plot => (plot.field.x === field.field.x && (plot.field.y + 1) === field.field.y))?.eastId
+//             // console.log("neighbours east")
+//             // console.log(southEast)
+//             // console.log(northEast)
+//             if (southEast !== undefined) { field.eastId = southEast }
+//             else if (northEast !== undefined) { field.eastId = northEast }
+//             else {
+//                 field.eastId = sides
+//                 sides++
+//             }
+//             // console.log(field.eastId)
+//         }
+
+//         // South
+//         if (field.south === undefined) {
+//             // Get East neighbours SouthId
+//             const eastSouth = fieldDetails.find(plot => ((plot.field.x - 1) === field.field.x && plot.field.y === field.field.y))?.southId
+//             // Get West neighbours SouthId
+//             const westSouth = fieldDetails.find(plot => ((plot.field.x + 1) === field.field.x && plot.field.y === field.field.y))?.southId
+//             // console.log("neighbours south")
+//             // console.log(eastSouth)
+//             // console.log(westSouth)
+//             if (eastSouth !== undefined) { field.southId = eastSouth }
+//             else if (westSouth !== undefined) { field.southId = westSouth }
+//             else {
+//                 field.southId = sides
+//                 sides++
+//             }
+//             // console.log(field.southId)
+//         }
+
+//         // West
+//         if (field.west === undefined) {
+//             // Get South neighbours WestId
+//             const southWest = fieldDetails.find(plot => (plot.field.x === field.field.x && (plot.field.y - 1) === field.field.y))?.westId
+//             // Get North neighbours WestId
+//             const northWest = fieldDetails.find(plot => (plot.field.x === field.field.x && (plot.field.y + 1) === field.field.y))?.westId
+//             // console.log("neighbours west")
+//             // console.log(southWest)
+//             // console.log(northWest)
+//             if (southWest !== undefined) { field.westId = southWest }
+//             else if (northWest !== undefined) { field.westId = northWest }
+//             else {
+//                 field.westId = sides
+//                 sides++
+//             }
+//             // console.log(field.westId)
+//         }
+//     })
+//     // console.log(fieldDetails)
+
+//     return sides
+// }
 
 function getRestOfField(area, startPosition) {
     // console.log("lets go!")
