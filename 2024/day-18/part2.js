@@ -3480,9 +3480,20 @@ const test1 = [
 ]
 
 function main(data, gridSize, iterations) {
-    console.log("Day 18 part 1...")
-    const map = createMap(data.slice(0, iterations), gridSize)
-    findPath(map)
+    console.log("Day 18 part 2...")
+
+    let i = iterations
+    let hasPath = true
+    while (hasPath) {
+        console.log(i)
+        const map = createMap(data.slice(0, i), gridSize)
+        // printMap(map)
+        hasPath = findPath(map)
+        if (!hasPath) { console.log(data[i - 1]) }
+        // hasPath = false
+        i++
+    }
+
 
 }
 
@@ -3490,7 +3501,7 @@ const test1GridSize = 6
 const inputGridSize = 70
 
 // main(test1, test1GridSize, 12)
-main(input, inputGridSize, 1024) // 310
+main(input, inputGridSize, 1024) // 16,46
 
 function createMap(data, gridSize) {
     const map = new Array(gridSize + 1).fill().map(() => new Array(gridSize + 1).fill("."))
@@ -3499,7 +3510,7 @@ function createMap(data, gridSize) {
     })
     map[0][0] = "S"
     map[map.length - 1][map[0].length - 1] = "E"
-    printMap(map)
+    // printMap(map)
     return map
 }
 
@@ -3564,8 +3575,9 @@ function findPath(map) {
     }
 
     // 6
-    console.log("nodesWithSmallestDistance:")
-    console.log(nodesWithSmallestDistance)
+    // console.log("nodesWithSmallestDistance:")
+    // console.log(nodesWithSmallestDistance)
+    return nodesWithSmallestDistance.length > 0
 
 }
 
