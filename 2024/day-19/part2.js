@@ -448,29 +448,9 @@ const isProblemPossible = memoize(
                 parts += isProblemPossible(problem.slice(pattern.length))
             }
         })
-        // if (count === 0) { console.log(`Problem ${problem} is sadly not possible!`) }
-        // return parts.length > 0 ? parts : undefined
         return parts
     }
 )
-
-// const isProblemPossible = memoize(
-//     (problem) => {
-//         if (parsedData.towelPatterns.includes(problem)) {
-//             // console.log(`Problem ${problem} is indeed possible!`)
-//             return 1
-//         }
-//         let count = 0
-//         parsedData.towelPatterns.forEach(pattern => {
-//             if (problem.startsWith(pattern)) {
-//                 // console.log(`Problem ${problem} starts with pattern ${pattern}, now trying subproblem ${problem.slice(pattern.length)}`)
-//                 count += isProblemPossible(problem.slice(pattern.length))
-//             }
-//         })
-//         // if (count === 0) { console.log(`Problem ${problem} is sadly not possible!`) }
-//         return count
-//     }
-// )
 
 function main(data) {
     console.log("Day 19 part 1...")
@@ -487,21 +467,6 @@ function main(data) {
     })
     console.log(count)
 }
-
-// function main(data) {
-//     console.log("Day 19 part 1...")
-//     parsedData = parseInput(data)
-//     // console.log(parsedData)
-//     // console.log(isProblemPossible("gbgrrruuwwwgbgggwggrruubwwwwwuuurgruwwbw"))
-//     let count = 0
-//     parsedData.problems.forEach(problem => {
-//         console.log("Working on problem " + problem)
-//         const subCount = isProblemPossible(problem)
-//         count += subCount
-//         console.log(subCount)
-//     })
-//     console.log(count)
-// }
 
 // main(test1) // 16
 main(input) // 572248688842069
