@@ -23,9 +23,9 @@ function main(data) {
     let registerC = program.registerC
     const instructions = program.instructions
     let instructionPointer = 0
-    console.log(registerA)
-    console.log(registerB)
-    console.log(registerC)
+    console.log(registerA.toString(8))
+    console.log(registerB.toString(8))
+    console.log(registerC.toString(8))
     const output = []
 
     while (instructionPointer <= instructions.length - 2) {
@@ -81,9 +81,10 @@ function main(data) {
                 break;
         }
 
-        console.log(registerA)
-        console.log(registerB)
-        console.log(registerC)
+        console.log(registerA.toString(8))
+        console.log(registerB.toString(8))
+        console.log(registerC.toString(8))
+        printOutput(output)
 
         instructionPointer += 2
     }
